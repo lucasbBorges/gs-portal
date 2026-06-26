@@ -6,11 +6,13 @@ const navItems = [
   { label: 'Jobs', icon: BriefcaseBusiness, to: '/jobs' },
   { label: 'Cadastros', icon: Building2, to: '/cadastro' },
   { label: 'DARFs', icon: FileArchive, to: '/darfs' },
-  { label: 'Supply Tax', icon: ReceiptText, to: '/home' }
+  { label: 'Supply Tax', icon: ReceiptText, to: '/home', permission: 'canViewSupplyTax' }
 ];
 
 export function AppSidebar() {
   const location = useLocation();
+  const currentUser = getCurrentUser();
+  const visibleNavItems = navItems.filter((item) => !item.permission || currentUser?.[item.permission]);
 
   return (
     <aside className="sidebar">
@@ -25,7 +27,7 @@ export function AppSidebar() {
       </div>
 
       <nav className="sidebar-nav" aria-label="Menu principal">
-        {navItems.map((item) => {
+        {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.to === location.pathname && ['Inicio', 'Jobs', 'Cadastros', 'DARFs'].includes(item.label);
 
@@ -39,10 +41,10 @@ export function AppSidebar() {
       </nav>
 
       <div className="sidebar-user">
-        <span className="avatar">CA</span>
+        <span className="avatar">{currentUser.initials}</span>
         <div>
-          <strong>Cristiano A.</strong>
-          <span>cliente@grupostudio.com.br</span>
+          <strong>{currentUser.name}</strong>
+          <span>{currentUser.email}</span>
         </div>
       </div>
 
@@ -52,4 +54,19 @@ export function AppSidebar() {
       </Link>
     </aside>
   );
+}
+
+function getCurrentUser() {
+  const fallbackUser = {
+    name: 'Cristiano A.',
+    initials: 'CA',
+    email: 'cliente@grupostudio.com.br',
+    canViewSupplyTax: true
+  };
+
+  try {
+    return JSON.parse(window.localStorage.getItem('grupoStudioUser')) ?? fallbackUser;
+  } catch {
+    return fallbackUser;
+  }
 }

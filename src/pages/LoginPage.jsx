@@ -1,12 +1,38 @@
 import { ArrowRight, BriefcaseBusiness, FileCheck2, LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const defaultUser = {
-  email: 'cliente@grupostudio.com.br',
-  password: 'Studio@2026'
-};
+const mockUsers = [
+  {
+    id: 'admin',
+    name: 'Cristiano A.',
+    initials: 'CA',
+    role: 'Cliente administrador',
+    email: 'cliente@grupostudio.com.br',
+    password: 'Studio@2026',
+    canViewSupplyTax: true
+  },
+  {
+    id: 'operational',
+    name: 'Mariana C.',
+    initials: 'MC',
+    role: 'Cliente operacional',
+    email: 'operacional@grupostudio.com.br',
+    password: 'Portal@2026',
+    canViewSupplyTax: false
+  }
+];
 
 export function LoginPage() {
+  const navigate = useNavigate();
+  const [selectedUser, setSelectedUser] = useState(mockUsers[0]);
+
+  function login(event) {
+    event.preventDefault();
+    window.localStorage.setItem('grupoStudioUser', JSON.stringify(selectedUser));
+    navigate('/home');
+  }
+
   return (
     <main className="login-shell">
       <aside className="login-showcase" aria-label="Resumo do portal">
@@ -61,18 +87,27 @@ export function LoginPage() {
           <h1>Entre no portal para acompanhar sua operacao fiscal.</h1>
         </div>
 
-        <div className="mock-user-card" aria-label="Usuario padrao mockado">
-          <span>Usuario padrao</span>
-          <strong>{defaultUser.email}</strong>
-          <em>Senha: {defaultUser.password}</em>
+        <div className="mock-users" aria-label="Usuarios mockados">
+          {mockUsers.map((user) => (
+            <button
+              className={selectedUser.id === user.id ? 'mock-user-card active' : 'mock-user-card'}
+              key={user.id}
+              onClick={() => setSelectedUser(user)}
+              type="button"
+            >
+              <span>{user.role}</span>
+              <strong>{user.email}</strong>
+              <em>{user.canViewSupplyTax ? 'Com Supply Tax' : 'Sem Supply Tax'}</em>
+            </button>
+          ))}
         </div>
 
-        <form className="login-form">
+        <form className="login-form" onSubmit={login}>
           <label>
             <span>E-mail</span>
             <div className="field">
               <Mail size={18} aria-hidden="true" />
-              <input type="email" defaultValue={defaultUser.email} autoComplete="email" />
+              <input type="email" key={selectedUser.email} defaultValue={selectedUser.email} autoComplete="email" />
             </div>
           </label>
 
@@ -80,7 +115,7 @@ export function LoginPage() {
             <span>Senha</span>
             <div className="field">
               <LockKeyhole size={18} aria-hidden="true" />
-              <input type="password" defaultValue={defaultUser.password} autoComplete="current-password" />
+              <input type="password" key={selectedUser.password} defaultValue={selectedUser.password} autoComplete="current-password" />
             </div>
           </label>
 
@@ -92,10 +127,10 @@ export function LoginPage() {
             <a href="#recuperar">Esqueci a senha</a>
           </div>
 
-          <Link className="primary-action" to="/home">
+          <button className="primary-action" type="submit">
             Entrar no portal
             <ArrowRight size={18} aria-hidden="true" />
-          </Link>
+          </button>
         </form>
       </section>
     </main>
