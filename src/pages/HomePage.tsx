@@ -7,9 +7,10 @@ import {
   FileUp,
   UserRound
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { AppSidebar } from '../components/AppSidebar.jsx';
-import { jobs, recentUploads } from '../data/dashboard.js';
+import { AppSidebar } from '../components/AppSidebar';
+import { jobs, recentUploads } from '../data/dashboard';
 
 export function HomePage() {
   const totals = jobs.reduce(
@@ -151,7 +152,20 @@ export function HomePage() {
   );
 }
 
-function MetricCard({ label, value, detail, highlight = false }) {
+type MetricCardProps = {
+  label: string;
+  value: string | number;
+  detail: string;
+  highlight?: boolean;
+};
+
+type ProfileItemProps = {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+};
+
+function MetricCard({ label, value, detail, highlight = false }: MetricCardProps) {
   return (
     <article className={highlight ? 'metric-card highlight' : 'metric-card'}>
       <span>{label}</span>
@@ -161,7 +175,7 @@ function MetricCard({ label, value, detail, highlight = false }) {
   );
 }
 
-function ProfileItem({ icon: Icon, label, value }) {
+function ProfileItem({ icon: Icon, label, value }: ProfileItemProps) {
   return (
     <div className="profile-item">
       <Icon size={18} aria-hidden="true" />

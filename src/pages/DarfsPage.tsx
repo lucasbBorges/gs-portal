@@ -1,7 +1,8 @@
 import { Bell, CalendarDays, CircleDollarSign, FileArchive, FileCheck2, FileUp, Search } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { AppSidebar } from '../components/AppSidebar.jsx';
-import { darfTimeline, darfUploads } from '../data/darfs.js';
+import { AppSidebar } from '../components/AppSidebar';
+import { darfTimeline, darfUploads } from '../data/darfs';
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -173,7 +174,21 @@ export function DarfsPage() {
   );
 }
 
-function MetricCard({ label, value, detail, highlight = false }) {
+type MetricCardProps = {
+  label: string;
+  value: string | number;
+  detail: string;
+  highlight?: boolean;
+};
+
+type InfoTileProps = {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  success?: boolean;
+};
+
+function MetricCard({ label, value, detail, highlight = false }: MetricCardProps) {
   return (
     <article className={highlight ? 'metric-card highlight' : 'metric-card'}>
       <span>{label}</span>
@@ -183,7 +198,7 @@ function MetricCard({ label, value, detail, highlight = false }) {
   );
 }
 
-function InfoTile({ icon: Icon, label, value, success = false }) {
+function InfoTile({ icon: Icon, label, value, success = false }: InfoTileProps) {
   return (
     <div className="info-tile">
       <Icon size={18} aria-hidden="true" />

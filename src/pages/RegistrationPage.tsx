@@ -1,7 +1,9 @@
 import { Bell, Building2, Mail, MapPin, Phone, Plus, Save, UserRound } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import type { FormEvent } from 'react';
 import { useMemo, useState } from 'react';
-import { AppSidebar } from '../components/AppSidebar.jsx';
-import { companyRegistration, initialParticipants } from '../data/registration.js';
+import { AppSidebar } from '../components/AppSidebar';
+import { companyRegistration, initialParticipants } from '../data/registration';
 
 const emptyParticipant = {
   nome: '',
@@ -12,8 +14,14 @@ const emptyParticipant = {
   status: 'Ativo'
 };
 
+type Participant = typeof emptyParticipant & {
+  id: number;
+};
+
+type ParticipantField = keyof typeof emptyParticipant;
+
 export function RegistrationPage() {
-  const [participants, setParticipants] = useState(initialParticipants);
+  const [participants, setParticipants] = useState<Participant[]>(initialParticipants);
   const [participantForm, setParticipantForm] = useState(emptyParticipant);
 
   const activeParticipants = useMemo(
@@ -21,11 +29,11 @@ export function RegistrationPage() {
     [participants]
   );
 
-  function updateParticipantField(field, value) {
+  function updateParticipantField(field: ParticipantField, value: string) {
     setParticipantForm((current) => ({ ...current, [field]: value }));
   }
 
-  function addParticipant(event) {
+  function addParticipant(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (!participantForm.nome.trim() || !participantForm.email.trim()) {
@@ -176,7 +184,27 @@ export function RegistrationPage() {
   );
 }
 
-function MetricCard({ label, value, detail, highlight = false }) {
+type MetricCardProps = {
+  label: string;
+  value: string | number;
+  detail: string;
+  highlight?: boolean;
+};
+
+type FieldProps = {
+  label: string;
+  defaultValue: string;
+  icon?: LucideIcon;
+  wide?: boolean;
+};
+
+type TextInputProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+};
+
+function MetricCard({ label, value, detail, highlight = false }: MetricCardProps) {
   return (
     <article className={highlight ? 'metric-card highlight' : 'metric-card'}>
       <span>{label}</span>
@@ -186,7 +214,7 @@ function MetricCard({ label, value, detail, highlight = false }) {
   );
 }
 
-function Field({ label, defaultValue, icon: Icon, wide = false }) {
+function Field({ label, defaultValue, icon: Icon, wide = false }: FieldProps) {
   return (
     <label className={wide ? 'registration-field wide' : 'registration-field'}>
       <span>{label}</span>
@@ -198,7 +226,7 @@ function Field({ label, defaultValue, icon: Icon, wide = false }) {
   );
 }
 
-function TextInput({ label, value, onChange }) {
+function TextInput({ label, value, onChange }: TextInputProps) {
   return (
     <label>
       <span>{label}</span>

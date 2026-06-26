@@ -5,6 +5,7 @@ Portal web para clientes do Grupo Studio acompanharem jobs fiscais, arquivos DAR
 ## Stack
 
 - React 18
+- TypeScript
 - Vite 8
 - React Router
 - React Query
@@ -84,7 +85,7 @@ Tela para o cliente acompanhar cada job com:
 - proxima acao;
 - linha de etapas.
 
-Dados mockados em `src/data/jobs.js`.
+Dados mockados em `src/data/jobs.ts`.
 
 ### Cadastro
 
@@ -108,7 +109,7 @@ Tambem inclui gestao de participantes, compativel com o conceito do sistema Proj
 - inclusao de participante em memoria na interface;
 - lista de participantes vinculados.
 
-Dados mockados em `src/data/registration.js`.
+Dados mockados em `src/data/registration.ts`.
 
 ### DARFs
 
@@ -123,35 +124,35 @@ Tela para gestao de DARFs com:
 - timeline de validacao;
 - historico de arquivos enviados.
 
-Dados mockados em `src/data/darfs.js`.
+Dados mockados em `src/data/darfs.ts`.
 
 ## Estrutura de Pastas
 
 ```text
 src/
   api/
-    client.js
+    client.ts
   components/
-    AppSidebar.jsx
+    AppSidebar.tsx
   data/
-    dashboard.js
-    darfs.js
-    jobs.js
-    registration.js
+    dashboard.ts
+    darfs.ts
+    jobs.ts
+    registration.ts
   pages/
-    DarfsPage.jsx
-    HomePage.jsx
-    JobsPage.jsx
-    LoginPage.jsx
-    RegistrationPage.jsx
-  main.jsx
-  router.jsx
+    DarfsPage.tsx
+    HomePage.tsx
+    JobsPage.tsx
+    LoginPage.tsx
+    RegistrationPage.tsx
+  main.tsx
+  router.tsx
   styles.css
 ```
 
 ## API e Integracao
 
-O cliente Axios esta configurado em `src/api/client.js`.
+O cliente Axios esta configurado em `src/api/client.ts`.
 
 Configuracao atual:
 
@@ -217,6 +218,10 @@ Rodar ambiente local:
 npm run dev
 ```
 
+Por padrao, o portal roda em `http://localhost:5170`.
+
+O item `Supply Tax` da sidebar redireciona para `http://localhost:5173`.
+
 Build de producao:
 
 ```bash
@@ -259,3 +264,4 @@ Validacoes ja executadas durante o desenvolvimento:
 - `npm run build`
 
 Ambos passaram apos as ultimas alteracoes.
+

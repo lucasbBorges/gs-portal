@@ -1,12 +1,27 @@
 import { BriefcaseBusiness, Building2, FileArchive, Home, LogOut, ReceiptText } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
-const navItems = [
+type SidebarUser = {
+  name: string;
+  initials: string;
+  email: string;
+  canViewSupplyTax: boolean;
+};
+
+type NavItem = {
+  label: string;
+  icon: typeof Home;
+  to: string;
+  external?: boolean;
+  permission?: keyof SidebarUser;
+};
+
+const navItems: NavItem[] = [
   { label: 'Inicio', icon: Home, to: '/home' },
   { label: 'Jobs', icon: BriefcaseBusiness, to: '/jobs' },
   { label: 'Cadastros', icon: Building2, to: '/cadastro' },
   { label: 'DARFs', icon: FileArchive, to: '/darfs' },
-  { label: 'Supply Tax', icon: ReceiptText, to: '/home', permission: 'canViewSupplyTax' }
+  { label: 'Supply Tax', icon: ReceiptText, to: 'http://localhost:5173', external: true, permission: 'canViewSupplyTax' }
 ];
 
 export function AppSidebar() {
@@ -30,9 +45,19 @@ export function AppSidebar() {
         {visibleNavItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.to === location.pathname && ['Inicio', 'Jobs', 'Cadastros', 'DARFs'].includes(item.label);
+          const className = isActive ? 'nav-item active' : 'nav-item';
+
+          if (item.external) {
+            return (
+              <a className={className} href={item.to} key={item.label}>
+                <Icon size={18} aria-hidden="true" />
+                <span>{item.label}</span>
+              </a>
+            );
+          }
 
           return (
-            <Link className={isActive ? 'nav-item active' : 'nav-item'} key={item.label} to={item.to}>
+            <Link className={className} key={item.label} to={item.to}>
               <Icon size={18} aria-hidden="true" />
               <span>{item.label}</span>
             </Link>
@@ -56,7 +81,7 @@ export function AppSidebar() {
   );
 }
 
-function getCurrentUser() {
+function getCurrentUser(): SidebarUser {
   const fallbackUser = {
     name: 'Cristiano A.',
     initials: 'CA',
@@ -65,7 +90,8 @@ function getCurrentUser() {
   };
 
   try {
-    return JSON.parse(window.localStorage.getItem('grupoStudioUser')) ?? fallbackUser;
+    const storedUser = window.localStorage.getItem('grupoStudioUser');
+    return storedUser ? JSON.parse(storedUser) : fallbackUser;
   } catch {
     return fallbackUser;
   }

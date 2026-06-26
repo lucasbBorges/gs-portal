@@ -1,9 +1,9 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-import { LoginPage } from './pages/LoginPage.jsx';
-import { HomePage } from './pages/HomePage.jsx';
-import { JobsPage } from './pages/JobsPage.jsx';
-import { RegistrationPage } from './pages/RegistrationPage.jsx';
-import { DarfsPage } from './pages/DarfsPage.jsx';
+import { LoginPage } from './pages/LoginPage';
+import { HomePage } from './pages/HomePage';
+import { JobsPage } from './pages/JobsPage';
+import { RegistrationPage } from './pages/RegistrationPage';
+import { DarfsPage } from './pages/DarfsPage';
 
 export const router = createBrowserRouter([
   {

@@ -1,6 +1,7 @@
 import { Bell, CalendarClock, CircleDollarSign, FileText, TrendingUp } from 'lucide-react';
-import { AppSidebar } from '../components/AppSidebar.jsx';
-import { clientJobs } from '../data/jobs.js';
+import type { LucideIcon } from 'lucide-react';
+import { AppSidebar } from '../components/AppSidebar';
+import { clientJobs } from '../data/jobs';
 
 const currencyFormatter = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
@@ -95,7 +96,21 @@ export function JobsPage() {
   );
 }
 
-function MetricCard({ label, value, detail, highlight = false }) {
+type MetricCardProps = {
+  label: string;
+  value: string | number;
+  detail: string;
+  highlight?: boolean;
+};
+
+type InfoTileProps = {
+  icon: LucideIcon;
+  label: string;
+  value: string;
+  success?: boolean;
+};
+
+function MetricCard({ label, value, detail, highlight = false }: MetricCardProps) {
   return (
     <article className={highlight ? 'metric-card highlight' : 'metric-card'}>
       <span>{label}</span>
@@ -105,7 +120,7 @@ function MetricCard({ label, value, detail, highlight = false }) {
   );
 }
 
-function InfoTile({ icon: Icon, label, value, success = false }) {
+function InfoTile({ icon: Icon, label, value, success = false }: InfoTileProps) {
   return (
     <div className="info-tile">
       <Icon size={18} aria-hidden="true" />

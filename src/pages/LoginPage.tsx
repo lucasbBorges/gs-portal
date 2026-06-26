@@ -1,8 +1,19 @@
 import { ArrowRight, BriefcaseBusiness, FileCheck2, LockKeyhole, Mail, ShieldCheck } from 'lucide-react';
+import type { FormEvent } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const mockUsers = [
+type MockUser = {
+  id: string;
+  name: string;
+  initials: string;
+  role: string;
+  email: string;
+  password: string;
+  canViewSupplyTax: boolean;
+};
+
+const mockUsers: MockUser[] = [
   {
     id: 'admin',
     name: 'Cristiano A.',
@@ -27,7 +38,7 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [selectedUser, setSelectedUser] = useState(mockUsers[0]);
 
-  function login(event) {
+  function login(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     window.localStorage.setItem('grupoStudioUser', JSON.stringify(selectedUser));
     navigate('/home');
