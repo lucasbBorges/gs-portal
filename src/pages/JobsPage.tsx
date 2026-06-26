@@ -1,5 +1,6 @@
 import { Bell, CalendarClock, CircleDollarSign, FileText, TrendingUp } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
 import { AppSidebar } from '../components/AppSidebar';
 import { clientJobs } from '../data/jobs';
 
@@ -10,13 +11,20 @@ const currencyFormatter = new Intl.NumberFormat('pt-BR', {
 });
 
 export function JobsPage() {
-  const totals = clientJobs.reduce(
-    (acc, job) => ({
-      recovered: acc.recovered + job.recovered,
-      estimate: acc.estimate + job.estimate,
-      active: acc.active + (job.progress < 100 ? 1 : 0)
-    }),
-    { recovered: 0, estimate: 0, active: 0 }
+  const [selectedJobId, setSelectedJobId] = useState(clientJobs[0].id);
+  const selectedJob = clientJobs.find((job) => job.id === selectedJobId) ?? clientJobs[0];
+  const allOpportunities = clientJobs.flatMap((job) => job.opportunities);
+  const selectedJobTotals = useMemo(
+    () =>
+      selectedJob.opportunities.reduce(
+        (acc, opportunity) => ({
+          recovered: acc.recovered + opportunity.recovered,
+          estimate: acc.estimate + opportunity.estimate,
+          active: acc.active + (opportunity.progress < 100 ? 1 : 0)
+        }),
+        { recovered: 0, estimate: 0, active: 0 }
+      ),
+    [selectedJob]
   );
 
   return (
@@ -28,7 +36,7 @@ export function JobsPage() {
           <div>
             <p>Jobs</p>
             <h1>Acompanhamento de jobs</h1>
-            <span>Veja etapa atual, valores recuperados, estimativas e proximas acoes.</span>
+            <span>Selecione um job para visualizar as oportunidades vinculadas a ele.</span>
           </div>
 
           <div className="header-actions">
@@ -39,57 +47,94 @@ export function JobsPage() {
         </header>
 
         <section className="summary-grid jobs-summary" aria-label="Resumo dos jobs">
-          <MetricCard label="Jobs ativos" value={totals.active} detail="em acompanhamento" />
-          <MetricCard label="R$ recuperado" value={currencyFormatter.format(totals.recovered)} detail="valor apurado" />
-          <MetricCard label="Estimativa" value={currencyFormatter.format(totals.estimate)} detail="potencial total" />
-          <MetricCard label="Conversao" value="74%" detail="recuperado / estimado" highlight />
+          <MetricCard label="Jobs ativos" value={clientJobs.length} detail="em acompanhamento" />
+          <MetricCard label="Oportunidades" value={allOpportunities.length} detail="mapeadas no portal" />
+          <MetricCard label="R$ recuperado" value={currencyFormatter.format(selectedJobTotals.recovered)} detail="job selecionado" />
+          <MetricCard label="Estimativa" value={currencyFormatter.format(selectedJobTotals.estimate)} detail="potencial do job" highlight />
         </section>
 
-        <section className="jobs-board" aria-label="Lista detalhada de jobs">
+        <section className="jobs-selector" aria-label="Selecao de job">
           {clientJobs.map((job) => (
-            <article className="job-detail-card" key={job.id}>
-              <div className="job-detail-main">
-                <div className="job-title-row">
-                  <div>
-                    <span>{job.category}</span>
-                    <h2>{job.title}</h2>
-                  </div>
-                  <strong>{job.status}</strong>
-                </div>
-
-                <div className="stage-bar">
-                  <span style={{ width: `${job.progress}%` }} />
-                </div>
-
-                <div className="job-stepper" aria-label={`Etapas de ${job.title}`}>
-                  {job.steps.map((step) => (
-                    <div className={step.current ? 'step-item current' : step.done ? 'step-item done' : 'step-item'} key={step.label}>
-                      <span aria-hidden="true" />
-                      <p>{step.label}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="job-detail-side">
-                <InfoTile icon={FileText} label="Etapa atual" value={job.stage} />
-                <InfoTile icon={CircleDollarSign} label="R$ recuperado" value={currencyFormatter.format(job.recovered)} success />
-                <InfoTile icon={TrendingUp} label="Estimativa" value={currencyFormatter.format(job.estimate)} />
-                <InfoTile icon={CalendarClock} label="Prazo estimado" value={job.deadline} />
-              </div>
-
-              <footer className="job-next-action">
+            <button
+              className={selectedJob.id === job.id ? 'job-selector-card active' : 'job-selector-card'}
+              key={job.id}
+              onClick={() => setSelectedJobId(job.id)}
+              type="button"
+            >
+              <div className="job-title-row">
                 <div>
-                  <span>Responsavel</span>
-                  <strong>{job.owner}</strong>
+                  <span>{job.owner}</span>
+                  <h2>{job.title}</h2>
                 </div>
-                <div>
-                  <span>Proxima acao</span>
-                  <strong>{job.nextAction}</strong>
-                </div>
+                <strong>{job.status}</strong>
+              </div>
+              <p>{job.description}</p>
+              <div className="stage-bar">
+                <span style={{ width: `${job.progress}%` }} />
+              </div>
+              <footer>
+                <span>{job.opportunities.length} oportunidades</span>
+                <strong>{job.updatedAt}</strong>
               </footer>
-            </article>
+            </button>
           ))}
+        </section>
+
+        <section className="panel selected-job-panel">
+          <div className="panel-heading">
+            <div>
+              <p>Job selecionado</p>
+              <h2>{selectedJob.title}</h2>
+            </div>
+            <span className="status-pill">{selectedJob.opportunities.length} oportunidades</span>
+          </div>
+
+          <div className="jobs-board" aria-label={`Oportunidades do job ${selectedJob.title}`}>
+            {selectedJob.opportunities.map((opportunity) => (
+              <article className="job-detail-card" key={opportunity.id}>
+                <div className="job-detail-main">
+                  <div className="job-title-row">
+                    <div>
+                      <span>{opportunity.category}</span>
+                      <h2>{opportunity.title}</h2>
+                    </div>
+                    <strong>{opportunity.status}</strong>
+                  </div>
+
+                  <div className="stage-bar">
+                    <span style={{ width: `${opportunity.progress}%` }} />
+                  </div>
+
+                  <div className="job-stepper" aria-label={`Etapas de ${opportunity.title}`}>
+                    {opportunity.steps.map((step) => (
+                      <div className={step.current ? 'step-item current' : step.done ? 'step-item done' : 'step-item'} key={step.label}>
+                        <span aria-hidden="true" />
+                        <p>{step.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="job-detail-side">
+                  <InfoTile icon={FileText} label="Etapa atual" value={opportunity.stage} />
+                  <InfoTile icon={CircleDollarSign} label="R$ recuperado" value={currencyFormatter.format(opportunity.recovered)} success />
+                  <InfoTile icon={TrendingUp} label="Estimativa" value={currencyFormatter.format(opportunity.estimate)} />
+                  <InfoTile icon={CalendarClock} label="Prazo estimado" value={opportunity.deadline} />
+                </div>
+
+                <footer className="job-next-action">
+                  <div>
+                    <span>Responsavel</span>
+                    <strong>{opportunity.owner}</strong>
+                  </div>
+                  <div>
+                    <span>Proxima acao</span>
+                    <strong>{opportunity.nextAction}</strong>
+                  </div>
+                </footer>
+              </article>
+            ))}
+          </div>
         </section>
       </section>
     </main>

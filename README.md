@@ -74,7 +74,11 @@ No momento, o botao de login navega para `/home` sem autenticacao real.
 
 ### Jobs
 
-Tela para o cliente acompanhar cada job com:
+Tela para o cliente selecionar um job e acompanhar as oportunidades vinculadas a ele.
+
+Cada job funciona como um agrupador de oportunidades. Ao clicar em um job especifico, a tela exibe apenas as oportunidades daquele job.
+
+Cada oportunidade apresenta:
 
 - etapa atual;
 - progresso;

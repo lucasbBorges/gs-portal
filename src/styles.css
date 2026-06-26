@@ -707,6 +707,57 @@ a {
   gap: 16px;
 }
 
+.jobs-selector {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.job-selector-card {
+  display: grid;
+  gap: 16px;
+  min-height: 210px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.job-selector-card.active {
+  border-color: rgba(155, 116, 64, 0.62);
+  background: #f0eadf;
+  box-shadow: 0 0 0 4px rgba(199, 164, 106, 0.12);
+}
+
+.job-selector-card p {
+  margin: 0;
+  color: #746b61;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.job-selector-card footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  color: #8b8278;
+  font-size: 0.78rem;
+}
+
+.job-selector-card footer strong {
+  color: var(--gold-deep);
+}
+
+.selected-job-panel {
+  margin-top: 0;
+}
+
 .job-detail-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
@@ -1192,6 +1243,7 @@ a {
   }
 
   .jobs-summary,
+  .jobs-selector,
   .job-detail-card,
   .registration-summary,
   .registration-grid,
