@@ -53,40 +53,58 @@ export function JobsPage() {
           <MetricCard label="Estimativa" value={currencyFormatter.format(selectedJobTotals.estimate)} detail="potencial do job" highlight />
         </section>
 
-        <section className="jobs-selector" aria-label="Selecao de job">
-          {clientJobs.map((job) => (
-            <button
-              className={selectedJob.id === job.id ? 'job-selector-card active' : 'job-selector-card'}
-              key={job.id}
-              onClick={() => setSelectedJobId(job.id)}
-              type="button"
-            >
-              <div className="job-title-row">
-                <div>
-                  <span>{job.owner}</span>
-                  <h2>{job.title}</h2>
+        <section className="jobs-section panel" aria-label="Selecao de job">
+          <div className="panel-heading">
+            <div>
+              <p>Jobs</p>
+              <h2>Jobs do cliente</h2>
+            </div>
+            <span className="status-pill">Escolha um job</span>
+          </div>
+
+          <div className="jobs-selector">
+            {clientJobs.map((job) => (
+              <button
+                className={selectedJob.id === job.id ? 'job-selector-card active' : 'job-selector-card'}
+                key={job.id}
+                onClick={() => setSelectedJobId(job.id)}
+                type="button"
+              >
+                <div className="job-title-row">
+                  <div>
+                    <span>{job.owner}</span>
+                    <h2>{job.title}</h2>
+                  </div>
+                  <strong>{job.status}</strong>
                 </div>
-                <strong>{job.status}</strong>
-              </div>
-              <p>{job.description}</p>
-              <div className="stage-bar">
-                <span style={{ width: `${job.progress}%` }} />
-              </div>
-              <footer>
-                <span>{job.opportunities.length} oportunidades</span>
-                <strong>{job.updatedAt}</strong>
-              </footer>
-            </button>
-          ))}
+                <p>{job.description}</p>
+                <div className="stage-bar">
+                  <span style={{ width: `${job.progress}%` }} />
+                </div>
+                <footer>
+                  <span>{job.opportunities.length} oportunidades vinculadas</span>
+                  <strong>{job.updatedAt}</strong>
+                </footer>
+              </button>
+            ))}
+          </div>
         </section>
 
         <section className="panel selected-job-panel">
           <div className="panel-heading">
             <div>
-              <p>Job selecionado</p>
-              <h2>{selectedJob.title}</h2>
+              <p>Oportunidades</p>
+              <h2>Oportunidades de {selectedJob.title}</h2>
             </div>
             <span className="status-pill">{selectedJob.opportunities.length} oportunidades</span>
+          </div>
+
+          <div className="selected-job-context">
+            <div>
+              <span>Job selecionado</span>
+              <strong>{selectedJob.title}</strong>
+            </div>
+            <p>{selectedJob.description}</p>
           </div>
 
           <div className="jobs-board" aria-label={`Oportunidades do job ${selectedJob.title}`}>
